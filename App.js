@@ -1,6 +1,7 @@
 import * as Haptics from 'expo-haptics';
 import React, { useState } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Linking } from 'react-native';
+import { Analytics } from '@vercel/analytics/react';
 export default function ChemistryApp() {
 
 
@@ -221,6 +222,7 @@ export default function ChemistryApp() {
   if (screen === 'home') {
     return (
       <View style={styles.container}>
+        <Analytics />
         <TouchableOpacity 
           style={styles.settingBtn} 
           onPress={() => setIsSettingsVisible(true)}
@@ -274,6 +276,7 @@ export default function ChemistryApp() {
   if (screen === 'end') {
     return (
       <View style={styles.container}>
+        <Analytics />
         <Text style={styles.title}>Well Done!</Text>
         <Text style={styles.scoreText}>Final Score: {totalCorrect + "/118"}</Text>
         <TouchableOpacity style={styles.startBtn} onPress={() => {setScore(0); setCurrentLevel(0); setScreen('home');}}>
@@ -286,6 +289,7 @@ export default function ChemistryApp() {
 
   return ( 
     <SafeAreaView style={styles.container}>
+      <Analytics />
       <View style={styles.card}>
         <Text style={styles.question}>What is this element?</Text>
         <Text style={styles.elementName}>{shuffledData[currentLevel].quest}</Text>
