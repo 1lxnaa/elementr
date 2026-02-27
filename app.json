@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "Elementr",
+    "slug": "elementr",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/Elementr.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/Elementr.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "bundleIdentifier": "com.OmarLuna.chemistryapp",
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
