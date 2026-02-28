@@ -304,11 +304,23 @@ export default function ChemistryApp() {
         <ProgressBar progress={progress} />
       </View>
 
-      <View style={styles.grid}>
+            <View style={styles.grid}>
         {shuffledData[currentLevel].options.map((optId) => {
-          let buttonStyle = styles.choiceBtn;
-          if (selectedAnswer === optId) {
-            buttonStyle = [styles.choiceBtn, isCorrect ? styles.correctBtn : styles.wrongBtn];
+          // 1. Identify the correct answer for the current level
+          const isThisTheCorrectAnswer = optId === shuffledData[currentLevel].correct;
+          const isThisTheUserSelection = selectedAnswer === optId;
+
+          let buttonStyle = [styles.choiceBtn];
+
+          // 2. Only apply "glow" logic if the user has actually made a choice
+          if (selectedAnswer !== null) {
+            if (isThisTheCorrectAnswer) {
+              // Always glow the correct one green once answered
+              buttonStyle.push(styles.correctBtn);
+            } else if (isThisTheUserSelection) {
+              // If this was picked but isn't correct, glow it red
+              buttonStyle.push(styles.wrongBtn);
+            }
           }
 
           return (
@@ -316,6 +328,7 @@ export default function ChemistryApp() {
               key={optId}
               style={buttonStyle}
               onPress={() => handleAnswer(optId)}
+              disabled={selectedAnswer !== null} // Disable other buttons after clicking
             >
               <Text style={styles.buttonText}>{optId}</Text>
             </TouchableOpacity>
