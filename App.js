@@ -7,6 +7,8 @@ export default function ChemistryApp() {
 // Initialize Speed Insights only if on Web
   useEffect(() => {
     if (Platform.OS === 'web') {
+      ReactGA.initialize("G-BH9T80GTRR");
+      ReactGA.send("pageview");
       injectSpeedInsights();
     }
   }, []);
