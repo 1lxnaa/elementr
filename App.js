@@ -1,7 +1,15 @@
 import * as Haptics from 'expo-haptics';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Linking } from 'react-native';
+import { injectSpeedInsights } from "@vercel/speed-insights";
 export default function ChemistryApp() {
+
+// Initialize Speed Insights only if on Web
+  useEffect(() => {
+    if (Platform.OS === 'web') {
+      injectSpeedInsights();
+    }
+  }, []);
 
 
 
