@@ -189,6 +189,11 @@ export default function ChemistryApp() {
     );
   };
 
+   const handleDragSelect = (event) => {
+    console.log('drag detected');
+     const { locationX, locationY } = event.nativeEvent; const col = Math.floor(locationX / 20) + 1; const row = Math.floor(locationY / 20) + 1; const item = elementData.find(d => d.row === row && d.col === col); if (item && !selectedElements.includes(item.id)) { toggleElement(item.id); } };
+
+
   const startGame = () => {
     setShuffledData(shuffleArray(elementData.filter((element) => selectedElements.includes(element.id))));
     setCurrentLevel(0);
@@ -272,14 +277,14 @@ export default function ChemistryApp() {
                   <Text>Deselect All</Text>
                 </TouchableOpacity>
               </View>
-              <View style={styles.tableContainer}>
+              <View style={styles.tableContainer} onTouchMove={handleDragSelect}>
                 {elementData.map((element) => (
                   <TouchableOpacity
                     key={element.id}
                     onPress={() => toggleElement(element.id)}
                     style={[styles.tableCell, {
-                      left: (element.col - 1) * 16,
-                      top: (element.row - 1) * 16,
+                      left: (element.col - 1) * 20,
+                      top: (element.row - 1) * 20,
                       backgroundColor: selectedElements.includes(element.id) ? '#ADEBB3' : '#D3D3D3'
                     }]}
                   >
@@ -436,15 +441,15 @@ const styles = StyleSheet.create({
   wrongBtn: { backgroundColor: '#e74c3c', borderColor: '#c0392b' },
   settingBtn: { position: 'absolute', top: 60, left: 30, zIndex: 10 },
   modalOverlay: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'center', alignItems: 'center', zIndex: 2000 },
-  modalContent: { backgroundColor: '#FFFFFF', padding: 30, borderRadius: 25, width: '85%', alignItems: 'center', borderWidth: 2, borderColor: '#ADEBB3' },
+  modalContent: { backgroundColor: '#FFFFFF', padding: 30, borderRadius: 25, width: '95%', alignItems: 'center', borderWidth: 2, borderColor: '#ADEBB3' },
   modalTitle: { fontSize: 28, fontWeight: 'bold', color: '#0c0d0d', marginBottom: 25 },
   toggleRow: { flexDirection: 'row', justifyContent: 'space-between', width: '100%', padding: 20, backgroundColor: '#f8f8f8', borderRadius: 15, marginBottom: 25, borderWidth: 1, borderColor: '#ddd' },
   modalText: { fontSize: 18, fontWeight: '600', color: '#353839' },
   toggleStatus: { fontSize: 18, fontWeight: 'bold' },
-  closeBtn: { backgroundColor: '#ADEBB3', paddingVertical: 15, borderRadius: 15, width: '100%', alignItems: 'center' },
+  closeBtn: { backgroundColor: '#ADEBB3', paddingVertical: 15, borderRadius: 15, width: '100%', alignItems: 'center', },
   elementLink: { paddingVertical: 5, paddingHorizontal: 5, borderRadius: 40, alignItems: 'center', top: -5, marginBottom: 50, textDecorationLine: 'underline' },
-  tableContainer: { width: 288, height: 160, position: 'relative' },
-  tableCell: { position: 'absolute', width: 20, height: 20, justifyContent: 'center', alignItems: 'center', margin: -15 },
+  tableContainer: { width: 288, height: 220, position: 'relative', alignSelf: 'center', marginLeft: -70 },
+  tableCell: { position: 'absolute', width: 20, height: 20, justifyContent: 'center', alignItems: 'center',   },
   selectRow: { flexDirection: 'row', width: '100%', margin: 20, justifyContent: 'space-around' },
   selectAllbtn: { padding: 8, borderRadius: 5 },
   deselectAllbtn: { padding: 8, borderRadius: 5 },
