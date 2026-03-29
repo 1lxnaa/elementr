@@ -31,17 +31,18 @@ export default function ChemistryApp() {
   const [screen, setScreen] = useState('home');
   const [totalAnswered, setTotalAnswered] = useState(0);
   const [totalCorrect, setTotalCorrect] = useState(0);
-
-  const currentAccuracy = totalAnswered > 0 
-    ? ((totalCorrect / totalAnswered) * 100).toFixed(1) 
-    : "0.0";
-
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
-
   const [hapticsEnabled, setHapticsEnabled] = useState(true);
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [isPeriodicsVisible, setIsPeriodicsVisible] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+
+  const currentAccuracy = totalAnswered > 0
+    ? ((totalCorrect / totalAnswered) * 100).toFixed(1)
+    : "0.0";
+
+  const colors = theme[darkMode ? 'dark' : 'light'];
 
   // --- EXTRACTED DATA ---
   const elementData = [
@@ -189,10 +190,15 @@ export default function ChemistryApp() {
     );
   };
 
-   const handleDragSelect = (event) => {
-    console.log('drag detected');
-     const { locationX, locationY } = event.nativeEvent; const col = Math.floor(locationX / 20) + 1; const row = Math.floor(locationY / 20) + 1; const item = elementData.find(d => d.row === row && d.col === col); if (item && !selectedElements.includes(item.id)) { toggleElement(item.id); } };
-
+  const handleDragSelect = (event) => {
+    const { locationX, locationY } = event.nativeEvent;
+    const col = Math.floor(locationX / 20) + 1;
+    const row = Math.floor(locationY / 20) + 1;
+    const item = elementData.find(d => d.row === row && d.col === col);
+    if (item && !selectedElements.includes(item.id)) {
+      toggleElement(item.id);
+    }
+  };
 
   const startGame = () => {
     setShuffledData(shuffleArray(elementData.filter((element) => selectedElements.includes(element.id))));
@@ -248,7 +254,7 @@ export default function ChemistryApp() {
   // --- SCREEN RENDERING ---
   if (screen === 'home') {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
         <TouchableOpacity
           style={styles.settingBtn}
           onPress={() => setIsSettingsVisible(true)}
@@ -256,25 +262,25 @@ export default function ChemistryApp() {
           <Text style={{ fontSize: 30 }}>⚙️</Text>
         </TouchableOpacity>
 
-        <Text style={styles.title}>Elementr</Text>
+        <Text style={[styles.title, { color: colors.text }]}>Elementr</Text>
 
         <TouchableOpacity
           style={styles.elementLink}
           onPress={() => setIsPeriodicsVisible(true)}
         >
-          <Text style={styles.buttonText}>Choose Elements</Text>
+          <Text style={[styles.buttonText, { color: colors.text }]}>Choose Elements</Text>
         </TouchableOpacity>
 
         {isPeriodicsVisible && (
           <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Choose Elements</Text>
+            <View style={[styles.modalContent, { backgroundColor: colors.card }]}>
+              <Text style={[styles.modalTitle, { color: colors.text }]}>Choose Elements</Text>
               <View style={styles.selectRow}>
                 <TouchableOpacity style={styles.selectAllbtn} onPress={selectAll}>
-                  <Text>Select All</Text>
+                  <Text style={{ color: colors.text }}>Select All</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.deselectAllbtn} onPress={deselectAll}>
-                  <Text>Deselect All</Text>
+                  <Text style={{ color: colors.text }}>Deselect All</Text>
                 </TouchableOpacity>
               </View>
               <View style={styles.tableContainer} onTouchMove={handleDragSelect}>
@@ -285,41 +291,51 @@ export default function ChemistryApp() {
                     style={[styles.tableCell, {
                       left: (element.col - 1) * 20,
                       top: (element.row - 1) * 20,
-                      backgroundColor: selectedElements.includes(element.id) ? '#ADEBB3' : '#D3D3D3'
+                      backgroundColor: selectedElements.includes(element.id) ? colors.accent : '#D3D3D3'
                     }]}
                   >
                     <Text style={{ fontSize: 9 }}>{element.quest}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
-              <TouchableOpacity style={styles.closeBtn} onPress={() => setIsPeriodicsVisible(false)}>
+              <TouchableOpacity style={[styles.closeBtn, { backgroundColor: colors.accent }]} onPress={() => setIsPeriodicsVisible(false)}>
                 <Text style={styles.buttonText}>CLOSE</Text>
               </TouchableOpacity>
             </View>
           </View>
         )}
 
-        <TouchableOpacity style={styles.startBtn} onPress={startGame}>
+        <TouchableOpacity style={[styles.startBtn, { backgroundColor: colors.accent }]} onPress={startGame}>
           <Text style={styles.buttonText}>START</Text>
         </TouchableOpacity>
 
         {isSettingsVisible && (
           <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Settings</Text>
+            <View style={[styles.modalContent, { backgroundColor: colors.card }]}>
+              <Text style={[styles.modalTitle, { color: colors.text }]}>Settings</Text>
 
               <TouchableOpacity
-                style={styles.toggleRow}
+                style={[styles.toggleRow, { backgroundColor: darkMode ? '#2a2a2a' : '#f8f8f8' }]}
                 onPress={() => setHapticsEnabled(!hapticsEnabled)}
               >
-                <Text style={styles.modalText}>Vibrations</Text>
+                <Text style={[styles.modalText, { color: colors.text }]}>Vibrations</Text>
                 <Text style={[styles.toggleStatus, { color: hapticsEnabled ? '#2ecc71' : '#e74c3c' }]}>
                   {hapticsEnabled ? "ON" : "OFF"}
                 </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={styles.closeBtn}
+                style={[styles.toggleRow, { backgroundColor: darkMode ? '#2a2a2a' : '#f8f8f8' }]}
+                onPress={() => setDarkMode(!darkMode)}
+              >
+                <Text style={[styles.modalText, { color: colors.text }]}>Dark Mode</Text>
+                <Text style={[styles.toggleStatus, { color: darkMode ? '#2ecc71' : '#e74c3c' }]}>
+                  {darkMode ? "ON" : "OFF"}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.closeBtn, { backgroundColor: colors.accent }]}
                 onPress={() => setIsSettingsVisible(false)}
               >
                 <Text style={styles.buttonText}>CLOSE</Text>
@@ -329,7 +345,7 @@ export default function ChemistryApp() {
         )}
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2026 1lxnaa. All Rights Reserved</Text>
+          <Text style={[styles.footerText, { color: colors.text }]}>© 2026 1lxnaa. All Rights Reserved</Text>
           <TouchableOpacity
             onPress={() => Linking.openURL('https://www.notion.so/Elementr-Legal-314a61a077468081968ddebe33779c5a?source=copy_link')}
           >
@@ -342,22 +358,22 @@ export default function ChemistryApp() {
 
   if (screen === 'end') {
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Well Done!</Text>
-        <Text style={styles.scoreText}>Final Score: {totalCorrect + "/" + totalAnswered}</Text>
-        <TouchableOpacity style={styles.startBtn} onPress={() => { setScore(0); setCurrentLevel(0); setScreen('home'); }}>
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <Text style={[styles.title, { color: colors.text }]}>Well Done!</Text>
+        <Text style={[styles.scoreText, { color: colors.text }]}>Final Score: {totalCorrect + "/" + totalAnswered}</Text>
+        <TouchableOpacity style={[styles.startBtn, { backgroundColor: colors.accent }]} onPress={() => { setScore(0); setCurrentLevel(0); setScreen('home'); }}>
           <Text style={styles.buttonText}>PLAY AGAIN</Text>
         </TouchableOpacity>
-        <Text style={styles.scoreText}>Accuracy: {currentAccuracy}%</Text>
+        <Text style={[styles.scoreText, { color: colors.text }]}>Accuracy: {currentAccuracy}%</Text>
       </View>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.card}>
-        <Text style={styles.question}>What is this element?</Text>
-        <Text style={styles.elementName}>{shuffledData[currentLevel].quest}</Text>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={[styles.card, { backgroundColor: colors.card }]}>
+        <Text style={[styles.question, { color: colors.text }]}>What is this element?</Text>
+        <Text style={[styles.elementName, { color: colors.text }]}>{shuffledData[currentLevel].quest}</Text>
 
         {showHint ? (
           <Text style={styles.hintBox}>💡 {shuffledData[currentLevel].hint}</Text>
@@ -369,7 +385,7 @@ export default function ChemistryApp() {
       </View>
 
       <View style={styles.topHeader}>
-        <Text style={styles.scoreText}>Score: {score}</Text>
+        <Text style={[styles.scoreText, { color: colors.text }]}>Score: {score}</Text>
         <ProgressBar progress={progress} />
       </View>
 
@@ -378,7 +394,7 @@ export default function ChemistryApp() {
           const isThisTheCorrectAnswer = optId === shuffledData[currentLevel].correct;
           const isThisTheUserSelection = selectedAnswer === optId;
 
-          let buttonStyle = [styles.choiceBtn];
+          let buttonStyle = [styles.choiceBtn, { backgroundColor: colors.accent }];
 
           if (selectedAnswer !== null) {
             if (isThisTheCorrectAnswer) {
@@ -395,7 +411,7 @@ export default function ChemistryApp() {
               onPress={() => handleAnswer(optId)}
               disabled={selectedAnswer !== null}
             >
-              <Text style={styles.buttonText}>{optId}</Text>
+              <Text style={[styles.buttonText, { color: colors.text }]}>{optId}</Text>
             </TouchableOpacity>
           );
         })}
@@ -415,6 +431,21 @@ export default function ChemistryApp() {
     </SafeAreaView>
   );
 }
+
+const theme = {
+  light: {
+    background: '#FFFFFF',
+    text: '#0c0d0d',
+    card: '#ADEBB3',
+    accent: '#ADEBB3',
+  },
+  dark: {
+    background: '#121212',
+    text: '#FFFFFF',
+    card: '#1e1e1e',
+    accent: '#7BC98A',
+  }
+};
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#FFFFFF', justifyContent: 'center', alignItems: 'center', padding: 20, paddingTop: 40 },
@@ -446,10 +477,10 @@ const styles = StyleSheet.create({
   toggleRow: { flexDirection: 'row', justifyContent: 'space-between', width: '100%', padding: 20, backgroundColor: '#f8f8f8', borderRadius: 15, marginBottom: 25, borderWidth: 1, borderColor: '#ddd' },
   modalText: { fontSize: 18, fontWeight: '600', color: '#353839' },
   toggleStatus: { fontSize: 18, fontWeight: 'bold' },
-  closeBtn: { backgroundColor: '#ADEBB3', paddingVertical: 15, borderRadius: 15, width: '100%', alignItems: 'center', },
-  elementLink: { paddingVertical: 5, paddingHorizontal: 5, borderRadius: 40, alignItems: 'center', top: -5, marginBottom: 50, textDecorationLine: 'underline' },
+  closeBtn: { backgroundColor: '#ADEBB3', paddingVertical: 15, borderRadius: 15, width: '100%', alignItems: 'center' },
+  elementLink: { paddingVertical: 5, paddingHorizontal: 5, borderRadius: 40, alignItems: 'center', top: -5, marginBottom: 50,        textDecorationLine: 'underline' },
   tableContainer: { width: 288, height: 220, position: 'relative', alignSelf: 'center', marginLeft: -70 },
-  tableCell: { position: 'absolute', width: 20, height: 20, justifyContent: 'center', alignItems: 'center',   },
+  tableCell: { position: 'absolute', width: 20, height: 20, justifyContent: 'center', alignItems: 'center' },
   selectRow: { flexDirection: 'row', width: '100%', margin: 20, justifyContent: 'space-around' },
   selectAllbtn: { padding: 8, borderRadius: 5 },
   deselectAllbtn: { padding: 8, borderRadius: 5 },
